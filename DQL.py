@@ -48,7 +48,7 @@ args = parser.parse_args()
 
 # Get the environment and extract the number of actions.
 env = gym.make(args.env_name)
-np.random.seed(123)
+np.random.seed(323)
 env.seed(123)
 nb_actions = env.action_space.n
 
@@ -101,23 +101,16 @@ dqn.compile(Adam(lr=.00025), metrics=['mae'])
 if args.mode == 'train':
     # Okay, now it's time to learn something! We capture the interrupt exception so that training
     # can be prematurely aborted. Notice that you can the built-in Keras callbacks!
-    max_steps = 1750000
-    steps = 0
-    weights_filename = 'dqn_{}_weights.h5f'.format(str((int)(steps/50000)))
+
+    checkpoint_weights_filename = 'dqn_' + args.env_name + '_weights_{step}.h5f'
+    log_filename = 'dqn_{}_log.json'.format(args.env_name)
+    callbacks = [ModelIntervalCheckpoint(checkpoint_weights_filename, interval=50000)]
+    callbacks += [FileLogger(log_filename, interval=100)]
+    dqn.fit(env, callbacks=callbacks, visualize=True, nb_steps=1750000, log_interval=50000)
+    weights_filename = 'dqn__weights.h5f'
+
+    # After training is done, we save the final weights one more time.
     dqn.save_weights(weights_filename, overwrite=True)
-
-    while steps < max_steps:
-	    checkpoint_weights_filename = 'dqn_' + args.env_name + '_weights_{step}.h5f'
-	    log_filename = 'dqn_{}_log.json'.format(args.env_name)
-	    callbacks = [ModelIntervalCheckpoint(checkpoint_weights_filename, interval=250000)]
-	    callbacks += [FileLogger(log_filename, interval=100)]
-	    dqn.fit(env, callbacks=callbacks, visualize=True, nb_steps=50000, log_interval=50000)
-	    steps += 50000
-	    weights_filename = 'dqn_{}_weights.h5f'.format(str((int)(steps/50000)))
-
-	    # After training is done, we save the final weights one more time.
-	    dqn.save_weights(weights_filename, overwrite=True)
-	    print "----\n\n\nNow at step: " + str(steps)+"\n\n\n"
 
     # Finally, evaluate our algorithm for 10 episodes.
     dqn.test(env, nb_episodes=10, visualize=False)
