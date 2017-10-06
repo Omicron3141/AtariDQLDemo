@@ -40,11 +40,11 @@ Let
 \end{itemize}
 Then, we'll define
 \[
-    s_t^\prime(x) = \m{x_1 & a_1 & x_2 & a_2 & \ldots & x_{t-1} & a_{t-1} & \bm x_t & a_t & x}
+    s_t^\prime(\bm x) = \m{\bm x_1 & a_1 & \bm x_2 & a_2 & \ldots & \bm x_{t-1} & a_{t-1} & \bm x_t & a_t & x}
 \]
 and once $x_{t+1}$ is observed, we'll write
 \[
-    \bm s_{t+1} = s_t^\prime(x_{t+1})
+    \bm s_{t+1} = s_t^\prime(\bm x_{t+1})
 \]
 then, our goal is to use $\bm s_{t+1}$ to predict the best $a_{t+1}$.
 
