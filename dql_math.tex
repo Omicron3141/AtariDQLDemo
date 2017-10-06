@@ -1,0 +1,98 @@
+\documentclass[12pt,letterpaper]{hmcpset}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{parskip}
+\usepackage{bm}
+
+% info for header block in upper right hand corner
+\name{Evan Hubinger}
+\class{CS 152}
+\assignment{Paper Report}
+
+\newcommand{\m}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\vecof}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\tx}[1]{\text{#1}}
+\newcommand{\pn}[1]{\left(#1\right)}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left|\left|#1\right|\right|}
+\newcommand{\bk}[1]{\left[#1\right]}
+\newcommand{\abk}[1]{\left\langle#1\right\rangle}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\ellipsis}{\,\ldots}
+\newcommand{\given}{\,|\,}
+\newcommand{\where}{\mid}
+\newcommand{\bbm}[1]{\mathbb{#1}}
+\newcommand{\impl}{\rightarrow}
+\newcommand{\dubimpl}{\leftrightarrow}
+
+\begin{document}
+
+Let
+\begin{itemize}
+\item $t \in \bbm N$ be the current time step,
+\item $\bm x_t \in \bbm R^d$ be the input at time $t$,
+\item $a_t \in A$ be the action taken at time $t$ based on input $\bm x_t$, and
+\item $r_t \in \bbm R$ be the reward received at time $t$ based on action $a_t$.
+\end{itemize}
+Then, we'll define
+\[
+    s_t^\prime(x) = \m{x_1 & a_1 & x_2 & a_2 & \ldots & x_{t-1} & a_{t-1} & \bm x_t & a_t & x}
+\]
+and once $x_{t+1}$ is observed, we'll write
+\[
+    \bm s_{t+1} = s_t^\prime(x_{t+1})
+\]
+then, our goal is to use $\bm s_{t+1}$ to predict the best $a_{t+1}$.
+
+First, we'll define what we mean by best. Let $T \in \bbm N$ be the total number of time steps, and $\gamma$ some discount rate on future rewards. Then, we'll define the future discounted return as
+\[
+    R_t = \sum_{t^\prime = t}^T \gamma^{t^\prime - t} r_{t^\prime}
+\]
+which is what we'll be trying to optimize for. To do this, we want to find a function $Q(\bm s_t, a_t)$ which will tell us the future discounted return for taking action $a_t$ given history $\bm s_t$. Specifically, we'll define the optimal $Q^*$, which we'll be trying to approximate, as
+\[
+    Q^*(\bm s_t, a_t) = \max_\pi \bbm E_{\bm s_t, a_t, \pi} \bk{R_t}
+\]
+where $\pi: \set{s \given \forall s} \to A$ is some policy for selecting actions based on states. Then, given $Q^*$, we can find the optimal action $a_t^*$ as
+\[
+    a_t^* = \tx{argmax}_{a^\prime}\pn{r_t + \gamma Q^*(\bm s_t, a^\prime)}
+\]
+therefore, if we can find an approximation for $Q^*$, we can also find an approximation for $a_t^*$, which is our actual goal. To do this, we want to find an iterative update rule for $Q$. Thus, we can rewrite the above formula for $Q^*$ recursively as
+\[
+    Q^*(\bm s_t, a_t) = \bbm E_{\bm x_{t+1}} \bk{r_t + \gamma \max_{a^\prime} Q^*(\bm s_{t+1}, a^\prime)}
+\]
+which gives us
+\[
+    Q_{i+1}(\bm s_t, a_t) = \bbm E_{\bm x_{t+1}} \bk{r_t + \gamma \max_{a^\prime} Q_i(\bm s_{t+1}, a^\prime)}
+\]
+which is the standard $Q$-learning update rule.
+
+Next, we want to adopt this formulation to allow us to approximate $Q$ with a neural network. Thus, for weights $\bm\theta$ and feature map $\phi$, we'll let
+\[
+    Q(\phi(\bm s_t), a_{t+1} \given \bm\theta)
+\]
+be our new $Q$. Then, we'll define the target value at iteration $i$ as
+\[
+    y_i(\bm s_t, a_t) = \bbm E_{\bm x_{t+1}} \bk{r_t + \gamma \max_{a^\prime} Q(\phi(\bm s_{t+1}), a^\prime \given \bm\theta_i)}
+\]
+which gives us the squared-loss loss function
+\[
+    L_i(\bm \theta_i) = \frac{1}{2} \bbm E_{\bm s_t, a_t} \bk{y_i(\bm s_t, a_t) - Q(\phi(\bm s_t), a_t \given \bm \theta_i)}
+\]
+which says that, for all states and actions, we want $Q$ to be as close to the estimated future discounted reward as possible. Interestingly, note that we are using $Q$ both as our predicted value and in constructing our target.
+
+Finally, using our loss function, we can construct an update rule for $\bm \theta$ which will actually let us train our deep $Q$-learning neural net. Taking the gradient of $L_i$, we get
+\begin{align*}
+& \nabla_{\bm\theta_i} L_i(\bm\theta_i) = \\
+& -\bbm E_{\bm s_t, a_t, \bm x_{t+1}} \bk{\pn{r_t + \gamma \max_{a^\prime} Q(\phi(\bm s_{t+1}), a^\prime \given \bm\theta_i) - Q(\phi(\bm s_t), a_t \given \bm\theta_i)} \nabla_{\bm\theta_i} Q(\phi(\bm s_t), a_t \given \bm\theta_i)}
+\end{align*}
+which gives the gradient descent update rule for $\bm \theta_i$
+\[
+    \bm \theta_{i+1} = \bm \theta_i - \eta \nabla_{\bm \theta_i} L_i(\bm \theta_i)
+\]
+where $\eta$ is the learning rate, which we can use to train our network.
+
+\end{document}
