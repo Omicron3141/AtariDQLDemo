@@ -106,7 +106,7 @@ if args.mode == 'train':
     log_filename = 'dqn_{}_log.json'.format(args.env_name)
     callbacks = [ModelIntervalCheckpoint(checkpoint_weights_filename, interval=50000)]
     callbacks += [FileLogger(log_filename, interval=100)]
-    dqn.fit(env, callbacks=callbacks, visualize=True, nb_steps=1750000, log_interval=50000)
+    dqn.fit(env, callbacks=callbacks, visualize=False, nb_steps=10000000, log_interval=50000)
     weights_filename = 'dqn__weights.h5f'
 
     # After training is done, we save the final weights one more time.
@@ -119,4 +119,4 @@ elif args.mode == 'test':
     if args.weights:
         weights_filename = args.weights
     dqn.load_weights(weights_filename)
-    dqn.test(env, nb_episodes=10, visualize=True)
+    dqn.test(env, nb_episodes=10, visualize=True, nb_max_episode_steps=5000)
