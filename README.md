@@ -1,8 +1,15 @@
-A demo of the Atari Learning enviroment and Deep Q-Learning for Harvey Mudd College's CS152 Neural Nets Course
+# Deep Q-Learning in Atari
 
-Before running:
-Install keras-rl using 
-pip install keras-rl
-
-Install openai's gym with the atari learning enviroment
-github.com/openai/gym#atari
+A demo of deep `Q`-learning in Atari for Harvey Mudd College's CS152 Neural Nets course. Just
+```
+make install
+```
+to set everything up, then
+```
+make test
+```
+to test or
+```
+make train
+```
+to train.
