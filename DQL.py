@@ -48,7 +48,7 @@ args = parser.parse_args()
 
 # Get the environment and extract the number of actions.
 env = gym.make(args.env_name)
-np.random.seed(323)
+np.random.seed(123)
 env.seed(123)
 nb_actions = env.action_space.n
 
