@@ -38,13 +38,9 @@ Let
 \item $a_t \in A$ be the action taken at time $t$ based on input $\bm x_t$, and
 \item $r_t \in \bbm R$ be the reward received at time $t$ based on action $a_t$.
 \end{itemize}
-Then, we'll define
+Once $x_{t+1}$ is observed, we'll define
 \[
-    s_t^\prime(\bm x) = \m{\bm x_1 & a_1 & \bm x_2 & a_2 & \ldots & \bm x_{t-1} & a_{t-1} & \bm x_t & a_t & x}
-\]
-and once $x_{t+1}$ is observed, we'll write
-\[
-    \bm s_{t+1} = s_t^\prime(\bm x_{t+1})
+    s_{t+1} = \m{\bm x_1 & a_1 & \bm x_2 & a_2 & \ldots & \bm x_{t-1} & a_{t-1} & \bm x_t & a_t & x_{t+1}}
 \]
 then, our goal is to use $\bm s_{t+1}$ to predict the best $a_{t+1}$.
 
