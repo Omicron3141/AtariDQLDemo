@@ -6,7 +6,7 @@ make install
 ```
 to set everything up, then
 ```
-make test
+make test-late
 ```
 to test or
 ```
