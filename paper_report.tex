@@ -1,17 +1,11 @@
-\documentclass[12pt,letterpaper]{hmcpset}
+\documentclass[12pt,letterpaper]{article}
 \usepackage[utf8x]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{enumerate}
 \usepackage{hyperref}
 \usepackage{lmodern}
-\usepackage{parskip}
 \usepackage{bm}
-
-% info for header block in upper right hand corner
-\name{Evan Hubinger and Jonah Rubin}
-\class{CS 152}
-\assignment{Paper Report}
 
 \newcommand{\m}[1]{\begin{bmatrix}#1\end{bmatrix}}
 \newcommand{\vecof}[1]{\begin{pmatrix}#1\end{pmatrix}}
@@ -29,9 +23,13 @@
 \newcommand{\impl}{\rightarrow}
 \newcommand{\dubimpl}{\leftrightarrow}
 
+\title{Playing Atari with Deep Reinforcement Learning}
+\author{Evan Hubinger and Jonah Rubin}
+
 \begin{document}
-{Playing Atari with Deep Reinforcement Learning}\\
-This paper proposes a new method of reinforcement learning for Atari games called Deep Q-Learning. Q-Learning is...
-\\
+\maketitle
+
+This paper proposes a new method of reinforcement learning for Atari games called Deep Q-Learning. Standard Q-Learning is a reinforcement learning strategy that attempts to learn a function, Q, to predict the expected future discounted return of some action. Deep Q-Learning is a modified version of Q-Learning that models Q using a deep neural net. While Q-Learning was an established strategy before the DeepMind paper, Deep Q-Learning was pioneered by them.
+
 The paper's method uses several new ideas, including replay memory which enables the network to randomly access previous actions. The method was also notable for being able to learn seven seperate games with the same network architecture and hyperparamaters. The network outperformed the state of the art algorithms on six of the seven games, and outperformed humans on three of the seven. The technology has been used to create later, more advanced Deep Q-Learning networks which play better.
 \end{document}
