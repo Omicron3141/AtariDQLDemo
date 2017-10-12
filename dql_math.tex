@@ -76,7 +76,7 @@ be our new $Q$. Then, we'll define the target value at iteration $i$ as
 \]
 which gives us the squared-loss loss function
 \[
-    L_i(\bm \theta_i) = \frac{1}{2} \bbm E_{\bm s_t, a_t} \bk{y_i(\bm s_t, a_t) - Q(\phi(\bm s_t), a_t \given \bm \theta_i)}
+    L_i(\bm \theta_i) = \frac{1}{2} \bbm E_{\bm s_t, a_t} \bk{\pn{y_i(\bm s_t, a_t) - Q(\phi(\bm s_t), a_t \given \bm \theta_i)}^2}
 \]
 which says that, for all states and actions, we want $Q$ to be as close to the estimated future discounted reward as possible. Interestingly, note that we are using $Q$ both as our predicted value and in constructing our target.
 
