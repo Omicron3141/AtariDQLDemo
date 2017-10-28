@@ -1,6 +1,6 @@
 .PHONY: install
 install:
-	apt-get install python-opengl
+	sudo apt-get install cmake python-opengl
 	pip install "gym[atari]" keras-rl tensorflow h5py
 
 .PHONY: train
